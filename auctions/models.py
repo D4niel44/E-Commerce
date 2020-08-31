@@ -8,6 +8,7 @@ class User(AbstractUser):
                                        related_name='users_watching')
 
 
+# TODO validate money fields
 class Listing(models.Model):
     user = models.ForeignKey('User',
                              on_delete=models.PROTECT,
