@@ -18,11 +18,14 @@ class Listing(models.Model):
                                related_name='listings')
     title = models.CharField(max_length=24)
     description = models.CharField(max_length=128)
-    image = models.ImageField(upload_to=f'listing_images/{title}')
+    image = models.ImageField(upload_to=f'listing_images/{title}',
+                              blank=True,
+                              null=True)
     initial_bid_amount = models.DecimalField(max_digits=12, decimal_places=2)
     actual_bid = models.OneToOneField('Bid',
                                       on_delete=models.PROTECT,
                                       blank=True,
+                                      null=True,
                                       related_name='listing_active_bid')
     category = models.ForeignKey('Category', on_delete=models.PROTECT)
 
