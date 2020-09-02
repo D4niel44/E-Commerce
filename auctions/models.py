@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.conf import settings
 
 
 class User(AbstractUser):
@@ -19,10 +18,7 @@ class Listing(models.Model):
                                related_name='listings')
     title = models.CharField(max_length=24)
     description = models.CharField(max_length=128)
-    image = models.ImageField(
-        upload_to=f'{settings.STATIC_URL}/listing_images/{title}',
-        blank=True,
-        null=True)
+    image = models.ImageField(upload_to=f'{title}', blank=True, null=True)
     initial_bid_amount = models.DecimalField(max_digits=12, decimal_places=2)
     actual_bid = models.OneToOneField('Bid',
                                       on_delete=models.PROTECT,
