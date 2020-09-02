@@ -3,5 +3,36 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    {% for listing in listings %}
+    <div class="row">
+      <div class="col-12">
+        <h3>{{ listing.title }}</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <p>{{ listing.description }}</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        {% if listing.image %}
+          <img src="{{ listing.image.url }}" alt="This listing does not have an image" width="120" height="120">
+        {% else %}
+          <img alt="This listing does not have an image">
+        {% endif %}
+      </div>
+    </div>
+    <div class="row justify-content-end">
+      <div class="col-3">
+        <span class="price">
+          {% if listing.actual_bid %}
+          <b>Current Price: ${{ listing.actual_bid.amount }}</b>
+          {% else %}
+          <b>Initial Bid Price: ${{ listing.initial_bid_amount }}</b>
+          {% endif %}
+        </span>
+      </div>
+    </div>
+    {% endfor %}
 {% endblock %}
