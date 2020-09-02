@@ -31,11 +31,9 @@ def login_view(request):
         if user is not None:
             login(request, user)
             return HttpResponseRedirect(reverse("index"))
-        else:
-            return render(request, "auctions/login.html",
-                          {"message": "Invalid username and/or password."})
-    else:
-        return render(request, "auctions/login.html")
+        return render(request, "auctions/login.html",
+                      {"message": "Invalid username and/or password."})
+    return render(request, "auctions/login.html")
 
 
 def logout_view(request):
@@ -64,8 +62,7 @@ def register(request):
                           {"message": "Username already taken."})
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
-    else:
-        return render(request, "auctions/register.html")
+    return render(request, "auctions/register.html")
 
 
 @login_required
@@ -80,11 +77,9 @@ def create_listing(request):
             listing = form.save()
             return HttpResponseRedirect(
                 reverse('listing', args=[listing.title]))
-        else:
-            return render(request, template, {
-                'form': form,
-            })
-    else:
         return render(request, template, {
-            'form': CreateListingForm(),
+            'form': form,
         })
+    return render(request, template, {
+        'form': CreateListingForm(),
+    })
