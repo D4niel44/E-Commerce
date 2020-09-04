@@ -141,6 +141,9 @@ def close_listing(request, listing_id):
     if request.method == 'POST':
         listing = Listing.objects.get(pk=listing_id)
         if request.user == listing.user and listing.status.can_bid:
-            listing.status = Status.objects.get(name='Sold')
+            if listing.actual_bid:
+                listing.status = Status.objects.get(name='Sold')
+            else:
+                listing.status = Status.objects.get(name='Cancelled')
             listing.save()
     return HttpResponseRedirect(reverse('listing', args=[listing_id]))
