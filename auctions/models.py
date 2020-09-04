@@ -50,6 +50,8 @@ class Bid(models.Model):
 
     def clean(self):
         listing = self.listing
+        if not listing.status.can_bid:
+            raise ValidationError('This listing is no longer open')
         if self.user == listing.user:
             raise ValidationError(
                 'You are not allowed to bid on self listings')
