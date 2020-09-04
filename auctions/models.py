@@ -50,6 +50,9 @@ class Bid(models.Model):
 
     def clean(self):
         listing = self.listing
+        if self.user == listing.user:
+            raise ValidationError(
+                'You are not allowed to bid on self listings')
         condition_1 = listing.actual_bid and self.amount.compare(
             listing.actual_bid.amount) <= 0
         condition_2 = self.amount.compare(listing.initial_bid_amount) < 0
