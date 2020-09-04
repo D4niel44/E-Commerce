@@ -88,7 +88,7 @@ def listing(request, listing_id):
     template = 'auctions/listing.html'
     listing = Listing.objects.get(pk=listing_id)
     user = request.user
-    if request.method == 'POST':
+    if user.is_authenticated and request.method == 'POST':
         incomplete_bid = Bid(user=user, listing=listing)
         form = BidForm(request.POST, instance=incomplete_bid)
         if form.is_valid():
