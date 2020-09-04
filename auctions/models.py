@@ -50,7 +50,7 @@ class Bid(models.Model):
 
     def clean(self):
         listing = self.listing
-        condition_1 = listing and self.amount.compare(
+        condition_1 = listing.actual_bid and self.amount.compare(
             listing.actual_bid.amount) <= 0
         condition_2 = self.amount.compare(listing.initial_bid_amount) < 0
         if condition_1 or condition_2:
