@@ -120,5 +120,11 @@ def toogle_watchlist(request, listing_id):
     pass
 
 
+@login_required
 def close_listing(request, listing_id):
-    pass
+    if request.method == 'POST':
+        listing = Listing.objects.get(pk=listing_id)
+        if request.user == listing.user and listing.status.can_bid:
+            listing.status = Status.objects.get(name='Sold')
+            listing.save()
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))
