@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import User, Listing, Bid, Status
-from .forms import CreateListingForm
+from .forms import CreateListingForm, BidForm
 
 
 def index(request):
@@ -82,3 +82,31 @@ def create_listing(request):
     return render(request, template, {
         'form': CreateListingForm(),
     })
+
+
+def listing(request, listing_id):
+    template = 'auctions/listing.html'
+    listing = Listing.objects.get(pk=listing_id)
+    user = request.user
+    if request.method == 'POST':
+        incomplete_bid = Bid(user=user, listing=listing)
+        form = BidForm(request.POST, instance=incomplete_bid)
+        if form.is_valid():
+            listing = form.save().listing
+            return HttpResponseRedirect(reverse('listing', args=[listing.pk]))
+        return render(
+            request, template, {
+                'form': form,
+                'listing': listing,
+                'comments': listing.comments.all(),
+                'bids_count': listing.bids.count(),
+                'has_bid': listing.bids.filter(user=user).count(),
+            })
+    return render(
+        request, 'auctions/listing.html', {
+            'form': BidForm(),
+            'listing': listing,
+            'comments': listing.comments.all(),
+            'bids_count': listing.bids.count(),
+            'has_bid': listing.bids.filter(user=user).count(),
+        })
