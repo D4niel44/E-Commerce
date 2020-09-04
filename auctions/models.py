@@ -63,6 +63,7 @@ class Bid(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.listing.actual_bid = self
+        self.listing.save()
 
 
 class Comment(models.Model):
