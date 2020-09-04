@@ -110,3 +110,15 @@ def listing(request, listing_id):
             'bids_count': listing.bids.count(),
             'has_bid': listing.bids.filter(user=user).count(),
         })
+
+
+def bid(request, listing_id):
+    pass
+
+
+def toogle_watchlist(request, listing_id):
+    pass
+
+
+def close_listing(request, listing_id):
+    pass
