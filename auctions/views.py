@@ -102,22 +102,38 @@ def listing(request, listing_id):
                 'bids_count': listing.bids.count(),
                 'has_bid': listing.bids.filter(user=user).count(),
             })
-    return render(
-        request, 'auctions/listing.html', {
-            'form': BidForm(),
-            'listing': listing,
-            'comments': listing.comments.all(),
-            'bids_count': listing.bids.count(),
-            'has_bid': listing.bids.filter(user=user).count(),
-        })
+    basic_template_parameters = {
+        'form': BidForm(),
+        'listing': listing,
+        'comments': listing.comments.all(),
+        'bids_count': listing.bids.count(),
+        'has_bid': None,
+        'is_on_watchlist': None,
+    }
+    if user.is_authenticated:
+        basic_template_parameters['has_bid'] = listing.bids.filter(
+            user=user).count()
+        basic_template_parameters[
+            'is_on_watchlist'] = listing.users_watching.filter(
+                id=user.id).exists()
+    return render(request, 'auctions/listing.html', basic_template_parameters)
 
 
 def bid(request, listing_id):
     pass
 
 
+@login_required
 def toogle_watchlist(request, listing_id):
-    pass
+    if request.method == 'POST':
+        user = request.user
+        listing = Listing.objects.get(pk=listing_id)
+        if listing.users_watching.filter(id=user.id).exists():
+            user.watchlist.remove(listing)
+        else:
+            user.watchlist.add(listing)
+        user.save()
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))
 
 
 @login_required
