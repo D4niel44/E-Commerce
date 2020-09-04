@@ -75,8 +75,7 @@ def create_listing(request):
         form = CreateListingForm(request.POST, instance=incomplete_listing)
         if form.is_valid():
             listing = form.save()
-            return HttpResponseRedirect(
-                reverse('listing', args=[listing.title]))
+            return HttpResponseRedirect(reverse('listing', args=[listing.pk]))
         return render(request, template, {
             'form': form,
         })
