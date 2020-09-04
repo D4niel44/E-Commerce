@@ -1,5 +1,14 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
+
+from decimal import Decimal
+
+
+# Validator for a Decimal field representing a price
+def positive_decimal_field(decimal_field):
+    if decimal_field.compare(Decimal(0)) <= 0:
+        raise ValidationError('Only positive values allowed for prices')
 
 
 class User(AbstractUser):
@@ -8,7 +17,6 @@ class User(AbstractUser):
                                        related_name='users_watching')
 
 
-# TODO validate money fields
 class Listing(models.Model):
     user = models.ForeignKey('User',
                              on_delete=models.PROTECT,
@@ -19,7 +27,8 @@ class Listing(models.Model):
     title = models.CharField(max_length=24)
     description = models.CharField(max_length=128)
     image = models.ImageField(upload_to=f'{title}', blank=True, null=True)
-    initial_bid_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    initial_bid_amount = models.DecimalField(
+        max_digits=12, decimal_places=2, validators=[positive_decimal_field])
     actual_bid = models.OneToOneField('Bid',
                                       on_delete=models.PROTECT,
                                       blank=True,
@@ -35,7 +44,25 @@ class Bid(models.Model):
     listing = models.ForeignKey('Listing',
                                 on_delete=models.CASCADE,
                                 related_name='bids')
-    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    amount = models.DecimalField(max_digits=12,
+                                 decimal_places=2,
+                                 validators=[positive_decimal_field])
+
+    def clean(self):
+        listing = self.listing
+        condition_1 = listing and self.amount.compare(
+            listing.actual_bid.amount) <= 0
+        condition_2 = self.amount.compare(listing.initial_bid_amount) < 0
+        if condition_1 or condition_2:
+            raise ValidationError({
+                'amount': [
+                    'Bid should be greater than actual bid or at least the starting bid price',
+                ]
+            })
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.listing.actual_bid = self
 
 
 class Comment(models.Model):
