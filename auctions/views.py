@@ -5,8 +5,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User, Listing, Bid, Status
-from .forms import CreateListingForm, BidForm
+from .models import User, Listing, Bid, Status, Comment
+from .forms import CreateListingForm, BidForm, CommentForm
 
 
 def index(request):
@@ -104,6 +104,7 @@ def listing(request, listing_id):
             })
     basic_template_parameters = {
         'form': BidForm(),
+        'comment_form': CommentForm(),
         'listing': listing,
         'comments': listing.comments.all(),
         'bids_count': listing.bids.count(),
