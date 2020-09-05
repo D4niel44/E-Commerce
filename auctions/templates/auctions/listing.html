@@ -1,0 +1,170 @@
+{% extends 'auctions/layout.html' %}
+{% block body %}
+  <div class="row">
+    <div class="col-12">
+      <h2>{{listing.title}}</h2>
+      {% if user.is_authenticated %}
+      {% if user == listing.actual_bid.user and listing.status.name == 'Sold' %}
+      <h2>Congratulations! You have won this item auction.</h2>
+      {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6 col-sm-12">
+      {% if listing.image %}
+      <img src="{{listing.image.url}}" alt="This listing does not have an image" height="240" width="240">
+      {% endif %}
+    </div>
+    <div class="col-6 col-sm-12">
+      <div class="row">
+        <div class="col-2">
+          {% if listing.status.name == 'Active' %}
+          <span class="badge badge-primary">Active</span>
+          {% elif listing.status.name == 'Sold' %}
+          <span class="badge badge-secondary">Sold</span>
+          {% else %}
+          <span class="badge badge-secondary">Cancelled</span>
+          {% endif %}
+        </div>
+        <div class="col-7">
+          <h5>Description</h5>
+        </div>
+        <div class="col-3">
+          {% if user.is_authenticated %}
+          <form action="{% url 'toogle_watchlist' listing.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">
+              {% if is_on_watchlist %}
+              Remove from Watchlist
+              {% else %}
+              Add to Watchlist
+              {% endif %}
+            </button>
+          </form>
+          {% endif %}
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <p>{{listing.description}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <b>Price:
+            {% if listing.actual_bid %}
+            {{listing.actual_bid.amount}}
+            {% else %}
+            {{listing.initial_bid_amount}}
+            {% endif %}
+          </b>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <span>
+            {% if bids_count %}
+              {{bids_count}} bid(s) have been placed on this object.
+              {% if request.user == listing.actual_bid.user %}
+                Your bid is the current bid.
+              {% elif 'has_bid' %}
+                You were outbidded
+              {% endif %}
+            {% elif user.is_authenticated %}
+            No bids have been placed on this object.
+            {% else %}
+            <a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a> to bid on this item.
+            {% endif %}
+          </span>
+        </div>
+        {% if user.is_authenticated %}
+        {% if request.user != listing.user and listing.status.can_bid%}
+        <form action="{% url 'listing' listing.id %}" method="post">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="col-2">
+              <label class="form-label" for="price-input">
+            </div>
+            <div class="col-6">
+              {% csrf_token %}
+              {{ form }}
+              {% comment %}
+              TODO Redesign where this goes
+
+              <input id="price-input" class="form-control" type="text"
+                {% if listing.actual_bid %}
+                placeholder="More than {{listing.actual_bid.amount}}"
+                {% else %}
+                placeholder="At least {{listing.initial_bid_amount}}"
+                {% endif %}
+              >
+              {% endcomment %}
+            </div>
+            <div class="col-4">
+              <input class="btn btn-primary" type="submit">
+            </div>
+          </div>
+        </form>
+        {% elif listing.status.can_bid %}
+        <form action="{% url 'close_listing' listing.id %}" method="post">
+          {% csrf_token %}
+          <input class="btn btn-primary" type="submit" value="Close">
+        </form>
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <h3>Details</h3>
+      <ul>
+        <li>Listed by: {{listing.user}}</li>
+        <li>Category: {{listing.category}}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <h3>Comments:</h3>
+    </div>
+  </div>
+  {% for comment in comments %}
+  <div class="row">
+    <div class="col-12">
+      <div class="row">
+        <div class="col-12">
+          <p>{{comment.text}}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <span class="comment-user">Commented By: {{comment.user}} on {{comment.date}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  <div clas="row">
+    <div class="col-12"
+      <h3> Leave a Comment</h3>
+    </div>
+  </div>
+  {% if user.is_authenticated %}
+  <div class="row">
+    <div class="col-12">
+      <form action="{% url 'post_comment' listing.id %}" method="post">
+        {% csrf_token %}
+        {{ comment_form }}
+        <button type="submit" class="btn btn-secondary">Post</button>
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-12">
+      <a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a> to comment on this listing.
+    </div>
+  </div>
+  {% endif %}
+{% endblock body %}
