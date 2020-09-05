@@ -34,7 +34,9 @@ class Listing(models.Model):
                                       blank=True,
                                       null=True,
                                       related_name='listing_active_bid')
-    category = models.ForeignKey('Category', on_delete=models.PROTECT)
+    category = models.ForeignKey('Category',
+                                 on_delete=models.PROTECT,
+                                 related_name='listings')
 
 
 class Bid(models.Model):
