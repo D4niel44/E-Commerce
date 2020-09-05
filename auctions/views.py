@@ -120,10 +120,6 @@ def listing(request, listing_id):
     return render(request, 'auctions/listing.html', basic_template_parameters)
 
 
-def bid(request, listing_id):
-    pass
-
-
 @login_required
 def toogle_watchlist(request, listing_id):
     if request.method == 'POST':
