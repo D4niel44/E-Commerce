@@ -4,6 +4,7 @@
     <h2>Active Listings</h2>
 
     {% for listing in listings %}
+    <a href="{% url 'listing' listing.id %}">
     <div class="row">
       <div class="col-12">
         <h3>{{ listing.title }}</h3>
@@ -34,5 +35,6 @@
         </span>
       </div>
     </div>
+    </a>
     {% endfor %}
 {% endblock %}
