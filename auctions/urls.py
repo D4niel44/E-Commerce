@@ -20,4 +20,6 @@ urlpatterns = [
          views.post_comment,
          name="post_comment"),
     path("watchlist", views.watchlist, name="watchlist"),
+    path("categories", views.categories, name="categories"),
+    path("categories/<int:category_id>", views.category, name="category"),
 ]
