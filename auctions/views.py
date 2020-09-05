@@ -147,3 +147,16 @@ def close_listing(request, listing_id):
                 listing.status = Status.objects.get(name='Cancelled')
             listing.save()
     return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+
+
+@login_required
+def post_comment(request, listing_id):
+    if request.method == 'POST':
+        listing = Listing.objects.get(id=listing_id)
+        base_comment = Comment(user=request.user, listing=listing)
+        form = CommentForm(request.POST, instance=base_comment)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+    return HttpResponseRedirect(reverse('listing', args=[listing_id]))
+
