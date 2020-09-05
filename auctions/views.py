@@ -157,3 +157,10 @@ def post_comment(request, listing_id):
             return HttpResponseRedirect(reverse('listing', args=[listing_id]))
     return HttpResponseRedirect(reverse('listing', args=[listing_id]))
 
+
+@login_required
+def watchlist(request):
+    user = request.user
+    return render(request, 'auctions/index.html', {
+        'listings': user.watchlist.all(),
+    })
