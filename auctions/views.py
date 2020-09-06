@@ -14,6 +14,7 @@ def index(request):
         request,
         'auctions/index.html',
         {
+            'title': 'Active Listings',
             'listings': Listing.objects.filter(status=1),
         },
     )
@@ -155,6 +156,7 @@ def post_comment(request, listing_id):
 def watchlist(request):
     user = request.user
     return render(request, 'auctions/index.html', {
+        'title': 'Listings on Watchlist',
         'listings': user.watchlist.all(),
     })
 
@@ -168,5 +170,6 @@ def categories(request):
 def category(request, category_id):
     category = Category.objects.get(id=category_id)
     return render(request, 'auctions/index.html', {
+        'title': category.name,
         'listings': category.listings.all(),
     })
