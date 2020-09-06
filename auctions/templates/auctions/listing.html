@@ -25,16 +25,34 @@
   </div>
   {% endif %}
   {% endif %}
+          {% for error in form.non_field_errors %}
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-danger mb-1" role="alert">
+                {{ error | escape }}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          {% for error in form.amount.errors%}
+          <div class="row">
+            <div class="col-12">
+              <div class="alert alert-danger mb-1" role="alert">
+                {{ error | escape }}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
   <hr>
   <div class="row">
-    <div class="col-lg-6 col-sm-12 pt-2">
+    <div class="col-lg-6 col-sm-12 pt-2 pr-0">
       {% if listing.image %}
       <img class="img-fluid rounded" src="{{listing.image.url}}" alt="This listing does not have an image">
       {% else %}
       <img class="img-fluid rounded" src="{% static 'auctions/noimage.png' %}" alt="This listing does not have an image">
       {% endif %}
     </div>
-    <div class="col-lg-6 col-sm-12 pt-2">
+    <div class="col-lg-6 col-sm-12 pt-2 pl-3">
       <div class="row">
         <div class="col-8">
           <h5>Description</h5>
@@ -54,13 +72,13 @@
           {% endif %}
         </div>
       </div>
-      <div class="row">
+      <div class="row h-50">
         <div class="col-12">
           <p>{{listing.description}}</p>
         </div>
       </div>
-      <div class="row align-bottom">
-        <div class="col-12">
+      <div class="row mt-auto mb-0 align-items-end">
+        <div class="col-12 mt-auto mb-0 align-self-end">
           <b>Price:
             {% if listing.actual_bid %}
             {{listing.actual_bid.amount}}
@@ -70,14 +88,14 @@
           </b>
         </div>
       </div>
-      <div class="row">
-        <div class="col-12">
+      <div class="row mb-0 align-items-end">
+        <div class="col-12 mb-0 align-self-end">
           <span>
             {% if bids_count %}
               {{bids_count}} bid(s) have been placed on this object.
               {% if request.user == listing.actual_bid.user %}
                 Your bid is the current bid.
-              {% elif 'has_bid' %}
+              {% elif has_bid %}
                 You were outbidded
               {% endif %}
             {% elif user.is_authenticated %}
@@ -94,27 +112,12 @@
         {% if request.user != listing.user and listing.status.can_bid%}
         <form action="{% url 'listing' listing.id %}" method="post">
           {% csrf_token %}
-          <div class="form-row">
-            <div class="col-2">
-              <label class="form-label" for="price-input">
+          <div class="form-row mt-2">
+            <div class="col-5 mr-1">
+              {{ form.amount }}
             </div>
-            <div class="col-6">
-              {% csrf_token %}
-              {{ form }}
-              {% comment %}
-              TODO Redesign where this goes
-
-              <input id="price-input" class="form-control" type="text"
-                {% if listing.actual_bid %}
-                placeholder="More than {{listing.actual_bid.amount}}"
-                {% else %}
-                placeholder="At least {{listing.initial_bid_amount}}"
-                {% endif %}
-              >
-              {% endcomment %}
-            </div>
-            <div class="col-4">
-              <input class="btn btn-primary" type="submit">
+            <div class="col-3 ml-1">
+              <input class="btn btn-primary" type="submit" value="Place Bid">
             </div>
           </div>
         </form>
@@ -155,8 +158,8 @@
          </div>
        </div>
        <div class="row">
-         <div class="col-12">
-           <span class="comment-user">Commented By: {{comment.user}} on {{comment.date}}</span>
+         <div class="col-12 ml-auto mr-0">
+           <h6 class="mb-0 mt-auto font-weight-light text-right comment-user">commented by: {{comment.user}} on {{comment.date}}</h6>
          </div>
        </div>
      </div>
@@ -164,20 +167,28 @@
   </div>
   {% endfor %}
   <div clas="row">
-    <div class="col-12"
-      <h3> Leave a Comment</h3>
+    <div class="col-12">
+      <h4>Leave a Comment</h4>
     </div>
   </div>
   {% if user.is_authenticated %}
-  <div class="row">
-    <div class="col-12">
-      <form action="{% url 'post_comment' listing.id %}" method="post">
-        {% csrf_token %}
-        {{ comment_form }}
-        <button type="submit" class="btn btn-secondary">Post</button>
-      </form>
+  <form action="{% url 'post_comment' listing.id %}" method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="col-6 pr-0">
+        {{ comment_form.text }}
+      </div>
     </div>
-  </div>
+    <div class="form-row">
+      <div class="col-6">
+        <div class="row justify-content-end">
+          <div class="col-1 mt-2 mr-1">
+            <button type="submit" class="btn btn-secondary">Post</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
   {% else %}
   <div class="row">
     <div class="col-12">
