@@ -94,8 +94,8 @@ def listing(request, listing_id):
         'listing': listing,
         'comments': listing.comments.all(),
         'bids_count': listing.bids.count(),
-        'has_bid': None,
-        'is_on_watchlist': None,
+        'has_bid': False,
+        'is_on_watchlist': False,
     }
     if user.is_authenticated and request.method == 'POST':
         incomplete_bid = Bid(user=user, listing=listing)
