@@ -1,40 +1,49 @@
 {% extends 'auctions/layout.html' %}
+{% load static %}
 {% block body %}
   <div class="row">
     <div class="col-12">
-      <h2>{{listing.title}}</h2>
-      {% if user.is_authenticated %}
-      {% if user == listing.actual_bid.user and listing.status.name == 'Sold' %}
-      <h2>Congratulations! You have won this item auction.</h2>
+      <h2>{{listing.title}}
+      {% if listing.status.name == 'Active' %}
+      <span class="badge badge-primary">Active</span>
+      {% elif listing.status.name == 'Sold' %}
+      <span class="badge badge-secondary">Sold</span>
+      {% else %}
+      <span class="badge badge-secondary">Cancelled</span>
       {% endif %}
-      {% endif %}
+      </h2>
     </div>
   </div>
+  {% if user.is_authenticated %}
+  {% if user == listing.actual_bid.user and listing.status.name == 'Sold' %}
   <div class="row">
-    <div class="col-6 col-sm-12">
+    <div class="col-12">
+      <div class="alert alert-success" role="alert">
+        Congratulations! You have won this item auction.
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+  <hr>
+  <div class="row">
+    <div class="col-lg-6 col-sm-12 pt-2">
       {% if listing.image %}
-      <img src="{{listing.image.url}}" alt="This listing does not have an image" height="240" width="240">
+      <img class="img-fluid rounded" src="{{listing.image.url}}" alt="This listing does not have an image">
+      {% else %}
+      <img class="img-fluid rounded" src="{% static 'auctions/noimage.png' %}" alt="This listing does not have an image">
       {% endif %}
     </div>
-    <div class="col-6 col-sm-12">
+    <div class="col-lg-6 col-sm-12 pt-2">
       <div class="row">
-        <div class="col-2">
-          {% if listing.status.name == 'Active' %}
-          <span class="badge badge-primary">Active</span>
-          {% elif listing.status.name == 'Sold' %}
-          <span class="badge badge-secondary">Sold</span>
-          {% else %}
-          <span class="badge badge-secondary">Cancelled</span>
-          {% endif %}
-        </div>
-        <div class="col-7">
+        <div class="col-8">
           <h5>Description</h5>
         </div>
-        <div class="col-3">
+        <div class="col-4">
           {% if user.is_authenticated %}
           <form action="{% url 'toogle_watchlist' listing.id %}" method="post">
             {% csrf_token %}
-            <button type="submit">
+            <button class="btn btn-outline-secondary btn-sm" type="submit">
               {% if is_on_watchlist %}
               Remove from Watchlist
               {% else %}
@@ -43,13 +52,14 @@
             </button>
           </form>
           {% endif %}
+        </div>
       </div>
       <div class="row">
         <div class="col-12">
           <p>{{listing.description}}</p>
         </div>
       </div>
-      <div class="row">
+      <div class="row align-bottom">
         <div class="col-12">
           <b>Price:
             {% if listing.actual_bid %}
@@ -77,6 +87,9 @@
             {% endif %}
           </span>
         </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
         {% if user.is_authenticated %}
         {% if request.user != listing.user and listing.status.can_bid%}
         <form action="{% url 'listing' listing.id %}" method="post">
@@ -112,9 +125,11 @@
         </form>
         {% endif %}
         {% endif %}
+        </div>
       </div>
     </div>
   </div>
+  <hr>
   <div class="row">
     <div class="col-12">
       <h3>Details</h3>
@@ -124,24 +139,27 @@
       </ul>
     </div>
   </div>
+  <hr>
   <div class="row">
     <div class="col-12">
       <h3>Comments:</h3>
     </div>
   </div>
   {% for comment in comments %}
-  <div class="row">
-    <div class="col-12">
-      <div class="row">
-        <div class="col-12">
-          <p>{{comment.text}}</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12">
-          <span class="comment-user">Commented By: {{comment.user}} on {{comment.date}}</span>
-        </div>
-      </div>
+  <div class="col-6">
+    <div class="row border rounded mt-2 pt-2 mb-2 pb-2">
+     <div class="col-12">
+       <div class="row">
+         <div class="col-12">
+           <p>{{comment.text}}</p>
+         </div>
+       </div>
+       <div class="row">
+         <div class="col-12">
+           <span class="comment-user">Commented By: {{comment.user}} on {{comment.date}}</span>
+         </div>
+       </div>
+     </div>
     </div>
   </div>
   {% endfor %}
