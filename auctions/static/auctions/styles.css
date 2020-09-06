@@ -11,6 +11,10 @@ body {
   box-shadow: 0 0 11px rgba(33,33,33,.2);
 }
 
-.img-fluid {
+.listing-img-sm {
   height: 280px;
+}
+
+.comment-user {
+  font-size: 13px;
 }
