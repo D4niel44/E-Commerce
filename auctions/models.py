@@ -26,7 +26,7 @@ class Listing(models.Model):
                                related_name='listings')
     title = models.CharField(max_length=24)
     description = models.CharField(max_length=128)
-    image = models.ImageField(upload_to=f'{title}', blank=True, null=True)
+    image = models.URLField(blank=True, null=True)
     initial_bid_amount = models.DecimalField(
         max_digits=12, decimal_places=2, validators=[positive_decimal_field])
     actual_bid = models.OneToOneField('Bid',
