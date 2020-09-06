@@ -88,20 +88,6 @@ def listing(request, listing_id):
     template = 'auctions/listing.html'
     listing = Listing.objects.get(pk=listing_id)
     user = request.user
-    if user.is_authenticated and request.method == 'POST':
-        incomplete_bid = Bid(user=user, listing=listing)
-        form = BidForm(request.POST, instance=incomplete_bid)
-        if form.is_valid():
-            listing = form.save().listing
-            return HttpResponseRedirect(reverse('listing', args=[listing.pk]))
-        return render(
-            request, template, {
-                'form': form,
-                'listing': listing,
-                'comments': listing.comments.all(),
-                'bids_count': listing.bids.count(),
-                'has_bid': listing.bids.filter(user=user).count(),
-            })
     basic_template_parameters = {
         'form': BidForm(),
         'comment_form': CommentForm(),
@@ -111,6 +97,13 @@ def listing(request, listing_id):
         'has_bid': None,
         'is_on_watchlist': None,
     }
+    if user.is_authenticated and request.method == 'POST':
+        incomplete_bid = Bid(user=user, listing=listing)
+        form = BidForm(request.POST, instance=incomplete_bid)
+        if form.is_valid():
+            listing = form.save().listing
+            return HttpResponseRedirect(reverse('listing', args=[listing.pk]))
+        basic_template_parameters['form'] = form
     if user.is_authenticated:
         basic_template_parameters['has_bid'] = listing.bids.filter(
             user=user).count()
