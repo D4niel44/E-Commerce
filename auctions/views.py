@@ -106,7 +106,7 @@ def listing(request, listing_id):
         basic_template_parameters['form'] = form
     if user.is_authenticated:
         basic_template_parameters['has_bid'] = listing.bids.filter(
-            user=user).count()
+            user=user).exists()
         basic_template_parameters[
             'is_on_watchlist'] = listing.users_watching.filter(
                 id=user.id).exists()
