@@ -1,40 +1,45 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
     <h2>Active Listings</h2>
 
+    <div class="row">
     {% for listing in listings %}
-    <a href="{% url 'listing' listing.id %}">
-    <div class="row">
-      <div class="col-12">
-        <h3>{{ listing.title }}</h3>
+      <div class="listing col-lg-3 col-sm-12 border rounded ml-3 mr-3 mt-3 mb-3 pl-3 pr-3 pt-3 pb-2">
+        <a class="listing-link" href="{% url 'listing' listing.id %}">
+          <div class="row">
+            <div class="col-12">
+              <h3>{{ listing.title }}</h3>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              {% if listing.image %}
+                <img class="img-fluid rounded" src="{{ listing.image.url }}" alt="This listing does not have an image">
+              {% else %}
+              <img class="img-fluid rounded" src="{% static 'auctions/noimage.png' %}" alt="This listing does not have an image">
+              {% endif %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <p>{{ listing.description }}</p>
+            </div>
+          </div>
+          <div class="row justify-content-start">
+            <div class="col-3">
+              <span class="price">
+                {% if listing.actual_bid %}
+                <strong>${{ listing.actual_bid.amount }}</strong>
+                {% else %}
+                <strong>${{ listing.initial_bid_amount }}</strong>
+                {% endif %}
+              </span>
+            </div>
+          </div>
+        </a>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <p>{{ listing.description }}</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-6">
-        {% if listing.image %}
-          <img src="{{ listing.image.url }}" alt="This listing does not have an image" width="120" height="120">
-        {% else %}
-          <img alt="This listing does not have an image">
-        {% endif %}
-      </div>
-    </div>
-    <div class="row justify-content-end">
-      <div class="col-3">
-        <span class="price">
-          {% if listing.actual_bid %}
-          <b>Current Price: ${{ listing.actual_bid.amount }}</b>
-          {% else %}
-          <b>Initial Bid Price: ${{ listing.initial_bid_amount }}</b>
-          {% endif %}
-        </span>
-      </div>
-    </div>
-    </a>
     {% endfor %}
+    </div>
 {% endblock %}
