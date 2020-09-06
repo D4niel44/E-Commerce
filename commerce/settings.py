@@ -29,7 +29,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'livereload',  # For live server TODO remove this before submitting
     'auctions',
     'django.contrib.admin',
     'django.contrib.auth',
