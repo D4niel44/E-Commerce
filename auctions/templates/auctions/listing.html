@@ -46,8 +46,8 @@
   <hr>
   <div class="row">
     <div class="col-lg-6 col-sm-12 pt-2 pr-0">
-      {% if listing.image %}
-      <img class="listing-img-lg img-fluid rounded" src="{{listing.image}}" onerror="this.src='{% static "auctions/noimage.png" %}'">
+      {% if listing.image_URL %}
+      <img class="listing-img-lg img-fluid rounded" src="{{listing.image_URL }}" onerror="this.src='{% static "auctions/noimage.png" %}'">
       {% else %}
       <img class="listing-img-lg img-fluid rounded" src="{% static 'auctions/noimage.png' %}" alt="This listing does not have an image">
       {% endif %}

@@ -13,7 +13,7 @@ class CreateListingForm(ModelForm):
     class Meta:
         model = Listing
         fields = [
-            'title', 'description', 'initial_bid_amount', 'image', 'category'
+            'title', 'description', 'initial_bid_amount', 'image_URL', 'category'
         ]
 
     def __init__(self, *args, **kwargs):
