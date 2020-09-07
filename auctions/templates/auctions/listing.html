@@ -45,19 +45,19 @@
           {% endfor %}
   <hr>
   <div class="row">
-    <div class="col-lg-6 col-sm-12 pt-2 pr-0">
+    <div class="col-lg-6 col-sm-12 pt-2 pr-0 pl-5">
       {% if listing.image_URL %}
       <img class="listing-img-lg img-fluid rounded" src="{{listing.image_URL }}" onerror="this.src='{% static "auctions/noimage.png" %}'">
       {% else %}
       <img class="listing-img-lg img-fluid rounded" src="{% static 'auctions/noimage.png' %}" alt="This listing does not have an image">
       {% endif %}
     </div>
-    <div class="col-lg-6 col-sm-12 pt-2 pl-3">
+    <div class="col-lg-6 col-sm-12 pt-2 pl-3 pr-5">
       <div class="row">
         <div class="col-8">
           <h5>Description</h5>
         </div>
-        <div class="col-4">
+        <div class="ml-auto col-auto">
           {% if user.is_authenticated %}
           <form action="{% url 'toogle_watchlist' listing.id %}" method="post">
             {% csrf_token %}
@@ -72,12 +72,12 @@
           {% endif %}
         </div>
       </div>
-      <div class="row h-50">
-        <div class="col-12">
-          <p>{{listing.description}}</p>
+      <div class="row mb-3">
+        <div class="col-12 pb-2">
+          <span class="text-break">{{listing.description}}</span>
         </div>
       </div>
-      <div class="row mt-auto mb-0 align-items-end">
+      <div class="row">
         <div class="col-12 mt-auto mb-0 align-self-end">
           <b>Price:
             {% if listing.actual_bid %}

@@ -3,8 +3,8 @@
 
 {% block body %}
     <h2>{{ title }}</h2>
-
-    <div class="row">
+    <hr>
+    <div class="row justify-content-center">
     {% for listing in listings %}
       <div class="listing col-lg-3 col-sm-12 border rounded ml-3 mr-3 mt-3 mb-3 pl-3 pr-3 pt-3 pb-2">
         <a class="listing-link" href="{% url 'listing' listing.id %}">
@@ -24,7 +24,7 @@
           </div>
           <div class="row">
             <div class="col-12">
-              <p>{{ listing.description }}</p>
+              <p class="text-break">{{ listing.description|truncatechars:97}}</p>
             </div>
           </div>
           <div class="row justify-content-start">
