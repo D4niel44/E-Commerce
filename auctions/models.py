@@ -52,6 +52,9 @@ class Bid(models.Model):
 
     def clean(self):
         listing = self.listing
+        # If there is no amount at his point then amount fields validations failed
+        if not self.amount:
+            return
         if not listing.status.can_bid:
             raise ValidationError('This listing is no longer open')
         if self.user == listing.user:
