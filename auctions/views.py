@@ -76,7 +76,7 @@ def create_listing(request):
         form = CreateListingForm(request.POST, instance=incomplete_listing)
         if form.is_valid():
             listing = form.save()
-            return HttpResponseRedirect(reverse('listing', args=[listing.pk]))
+            return HttpResponseRedirect(reverse('listing', args=[listing.id]))
         return render(request, template, {
             'form': form,
         })
@@ -87,7 +87,7 @@ def create_listing(request):
 
 def listing(request, listing_id):
     template = 'auctions/listing.html'
-    listing = Listing.objects.get(pk=listing_id)
+    listing = Listing.objects.get(id=listing_id)
     user = request.user
     basic_template_parameters = {
         'form': BidForm(),
@@ -103,7 +103,7 @@ def listing(request, listing_id):
         form = BidForm(request.POST, instance=incomplete_bid)
         if form.is_valid():
             listing = form.save().listing
-            return HttpResponseRedirect(reverse('listing', args=[listing.pk]))
+            return HttpResponseRedirect(reverse('listing', args=[listing.id]))
         basic_template_parameters['form'] = form
     if user.is_authenticated:
         basic_template_parameters['has_bid'] = listing.bids.filter(
@@ -118,7 +118,7 @@ def listing(request, listing_id):
 def toogle_watchlist(request, listing_id):
     if request.method == 'POST':
         user = request.user
-        listing = Listing.objects.get(pk=listing_id)
+        listing = Listing.objects.get(id=listing_id)
         if listing.users_watching.filter(id=user.id).exists():
             user.watchlist.remove(listing)
         else:
@@ -130,7 +130,7 @@ def toogle_watchlist(request, listing_id):
 @login_required
 def close_listing(request, listing_id):
     if request.method == 'POST':
-        listing = Listing.objects.get(pk=listing_id)
+        listing = Listing.objects.get(id=listing_id)
         if request.user == listing.user and listing.status.can_bid:
             if listing.actual_bid:
                 listing.status = Status.objects.get(name='Sold')
