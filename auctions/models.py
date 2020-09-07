@@ -25,7 +25,7 @@ class Listing(models.Model):
                                on_delete=models.PROTECT,
                                related_name='listings')
     title = models.CharField(max_length=24)
-    description = models.CharField(max_length=128)
+    description = models.TextField(max_length=512)
     image_URL = models.URLField(blank=True, null=True)
     initial_bid_amount = models.DecimalField(
         max_digits=12, decimal_places=2, validators=[positive_decimal_field])
@@ -81,7 +81,7 @@ class Comment(models.Model):
     listing = models.ForeignKey('Listing',
                                 on_delete=models.CASCADE,
                                 related_name='comments')
-    text = models.CharField(max_length=256)
+    text = models.TextField(max_length=256)
     date = models.DateTimeField(auto_now_add=True)
 
 
