@@ -46,10 +46,15 @@ def register(request):
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
-
-        # Ensure password matches confirmation
         password = request.POST['password']
         confirmation = request.POST['confirmation']
+
+        # Ensure all fields are filled
+        if not (username and email and password):
+            return render(request, 'auctions/register.html',
+                          {'message': 'All fields must be filled'})
+
+        # Ensure password matches confirmation
         if password != confirmation:
             return render(request, 'auctions/register.html',
                           {'message': 'Passwords must match.'})
