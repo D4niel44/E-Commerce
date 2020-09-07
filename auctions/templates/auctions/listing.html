@@ -1,5 +1,7 @@
 {% extends 'auctions/layout.html' %}
 {% load static %}
+{% load humanize %}
+
 {% block body %}
   <div class="row">
     <div class="col-12">
@@ -79,11 +81,11 @@
       </div>
       <div class="row">
         <div class="col-12 mt-auto mb-0 align-self-end">
-          <b>Price:
+          <b>$
             {% if listing.actual_bid %}
-            {{listing.actual_bid.amount}}
+            {{listing.actual_bid.amount|intcomma }}
             {% else %}
-            {{listing.initial_bid_amount}}
+            {{listing.initial_bid_amount|intcomma}}
             {% endif %}
           </b>
         </div>
@@ -159,7 +161,7 @@
        </div>
        <div class="row">
          <div class="col-12 ml-auto mr-0">
-           <h6 class="mb-0 mt-auto font-weight-light text-right comment-user">commented by: {{comment.user}} on {{comment.date}}</h6>
+           <h6 class="mb-0 mt-auto font-weight-light text-right comment-user">commented by: {{comment.user}} {{comment.date|naturaltime}}</h6>
          </div>
        </div>
      </div>

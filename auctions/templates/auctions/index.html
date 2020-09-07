@@ -1,5 +1,6 @@
 {% extends "auctions/layout.html" %}
 {% load static %}
+{% load humanize %}
 
 {% block body %}
     <h2>{{ title }}</h2>
@@ -31,9 +32,9 @@
             <div class="col-3">
               <span class="price">
                 {% if listing.actual_bid %}
-                <strong>${{ listing.actual_bid.amount }}</strong>
+                <strong>${{ listing.actual_bid.amount|intcomma }}</strong>
                 {% else %}
-                <strong>${{ listing.initial_bid_amount }}</strong>
+                <strong>${{ listing.initial_bid_amount|intcomma }}</strong>
                 {% endif %}
               </span>
             </div>
